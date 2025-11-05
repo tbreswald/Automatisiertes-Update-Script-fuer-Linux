@@ -1,0 +1,26 @@
+# Konfigurationsdatei (enthält möglicherweise persönliche Daten)
+config.conf
+
+# Log-Dateien
+*.log
+logs/
+
+# Backup-Dateien
+*.bak
+*.backup
+*~
+
+# Temporäre Dateien
+*.tmp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Editor-spezifische Dateien
+.vscode/
+.idea/
+*.sublime-*
+
+# System-Dateien
+.directory
