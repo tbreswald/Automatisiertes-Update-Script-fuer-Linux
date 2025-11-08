@@ -152,21 +152,26 @@ Alle Updates werden in Logdateien mit Zeitstempel gespeichert:
 ### Logs anzeigen
 
 Neueste Logdatei anzeigen:
+
+Option1: Script ausführen
 ```bash
 ./log_view_new.sh
 ```
-# oder
+
+Option 2: Manuell ausführen
 ```bash
 ls -lt /var/log/system-updates/ | head -n 2
 cat /var/log/system-updates/update_*.log
 ```
 
 Letzte 50 Zeilen des neuesten Logs:
+
+Option1: Script ausführen
 ```bash
 ./log_view_new50.sh
 ```
 
-# oder
+Option 2: Manuell ausführen
 ```bash
 tail -n 50 /var/log/system-updates/$(ls -t /var/log/system-updates/ | head -n 1)
 ```
