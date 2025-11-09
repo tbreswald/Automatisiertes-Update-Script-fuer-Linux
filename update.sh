@@ -178,6 +178,26 @@ update_suse() {
     return 0
 }
 
+# Update für Solus
+update_solus() {
+    log_info "Starte Update-Prozess für Solus-basierte Distribution..."
+    
+    eopkg update-repo 2>&1 | tee -a "$LOG_FILE"
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        log_error "eopkg update-repo fehlgeschlagen"
+        return 1
+    fi
+
+    eopkg upgrade -y 2>&1 | tee -a "$LOG_FILE"
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        log_error "eopkg upgrade fehlgeschlagen"
+        return 1
+    fi
+
+    log_info "Update erfolgreich abgeschlossen"
+    return 0
+}
+
 # Neustart prüfen
 check_reboot_required() {
     if [ "$AUTO_REBOOT" = true ]; then
@@ -219,6 +239,9 @@ case "$DISTRO" in
         ;;
     opensuse|opensuse-leap|opensuse-tumbleweed|sles|suse)
         update_suse && UPDATE_SUCCESS=true
+        ;;
+    solus)
+        update_solus && UPDATE_SUCCESS=true
         ;;
     *)
         log_error "Nicht unterstützte Distribution: $DISTRO"
