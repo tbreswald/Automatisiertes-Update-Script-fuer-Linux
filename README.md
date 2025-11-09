@@ -23,23 +23,56 @@ Automatisiertes Update-Script für verschiedene Linux-Distributionen mit optiona
 
 ### 1. Repository klonen oder Dateien herunterladen
 
+**Option A: Installation im Home-Verzeichnis (empfohlen)**
+
+```bash
+cd ~
+git clone https://github.com/nicolettas-muggelbude/Automatisiertes-Update-Script-fuer-Linux.git linux-update-script
+cd linux-update-script
+```
+
+**Option B: Installation in /opt (System-weit)**
+
 ```bash
 cd /opt
-git clone <https://github.com/nicolettas-muggelbude/Automatisiertes-Update-Script-fuer-Linux.git> linux-update-script
+sudo git clone https://github.com/nicolettas-muggelbude/Automatisiertes-Update-Script-fuer-Linux.git linux-update-script
+sudo chown -R $USER:$USER linux-update-script
 cd linux-update-script
 ```
 
 ### 2. Installations-Script ausführen
 
+**Ohne sudo ausführen** (als normaler User):
+
 ```bash
 ./install.sh
 ```
 
+> **Hinweis:** Das Installations-Script benötigt **keine** root-Rechte. Es erstellt nur die Konfigurationsdatei und richtet optional einen Cron-Job ein. Das eigentliche Update-Script (`update.sh`) wird später mit sudo ausgeführt.
+
 Das Installations-Script führt dich interaktiv durch die Einrichtung:
-- Konfiguration der E-Mail-Benachrichtigung
-- Festlegung des Log-Verzeichnisses
-- Optional: Einrichtung eines Cron-Jobs
-- Optional: Automatischer Neustart bei Bedarf
+
+**Schritt-für-Schritt:**
+1. **E-Mail-Benachrichtigung** aktivieren oder deaktivieren
+   - Bei Aktivierung: E-Mail-Adresse eingeben
+   - Script prüft automatisch, ob Mail-Programm installiert ist
+   - Zeigt distributionsspezifische Installationsanweisungen
+
+2. **Automatischer Neustart** (optional)
+   - System wird automatisch neu gestartet, wenn Updates dies erfordern
+
+3. **Log-Verzeichnis** (optional ändern)
+   - Standard: `/var/log/system-updates`
+   - Script legt Verzeichnis mit sudo an, falls nötig
+
+4. **Cron-Job einrichten** (optional)
+   - Täglich um 3:00 Uhr
+   - Wöchentlich (Sonntag, 3:00 Uhr)
+   - Monatlich (1. des Monats, 3:00 Uhr)
+   - Benutzerdefiniert
+   - Script richtet automatisch im root-Crontab ein
+
+Alle Schritte werden mit klaren Bestätigungsmeldungen quittiert.
 
 ### 3. Konfiguration überprüfen
 
@@ -59,27 +92,22 @@ sudo ./update.sh
 
 ### Automatische Updates via Cron
 
-Während der Installation kannst du einen Cron-Job einrichten. Beispiele:
+Während der Installation kannst du einen Cron-Job einrichten. Das Script richtet den Cron-Job automatisch im **root-Crontab** ein (du wirst einmal nach dem sudo-Passwort gefragt).
 
+**Verfügbare Optionen:**
+- Täglich um 3:00 Uhr
+- Wöchentlich (Sonntag, 3:00 Uhr)
+- Monatlich (1. des Monats, 3:00 Uhr)
+- Benutzerdefiniert
+
+**Root-Cron-Jobs anzeigen:**
 ```bash
-# Täglich um 3:00 Uhr
-0 3 * * * /opt/linux-update-script/update.sh
-
-# Wöchentlich (Sonntag, 3:00 Uhr)
-0 3 * * 0 /opt/linux-update-script/update.sh
-
-# Monatlich (1. des Monats, 3:00 Uhr)
-0 3 1 * * /opt/linux-update-script/update.sh
+sudo crontab -l
 ```
 
-Cron-Jobs anzeigen:
+**Root-Cron-Jobs bearbeiten:**
 ```bash
-crontab -l
-```
-
-Cron-Jobs bearbeiten:
-```bash
-crontab -e
+sudo crontab -e
 ```
 
 ## Konfiguration
@@ -151,29 +179,34 @@ Alle Updates werden in Logdateien mit Zeitstempel gespeichert:
 
 ### Logs anzeigen
 
-**Neueste Logdatei anzeigen:**
+**Interaktiver Log Viewer (empfohlen):**
 
-Option1: Script ausführen
 ```bash
-./log_view_new.sh
+./log-viewer.sh
 ```
 
-Option 2: Manuell ausführen
+Der Log Viewer bietet folgende Optionen:
+1. Neueste Logdatei komplett anzeigen
+2. Letzte 50 Zeilen des neuesten Logs
+3. Alle Logdateien auflisten
+4. Nach Fehlern in Logs suchen
+5. Beenden
+
+**Manuelle Log-Anzeige:**
+
+Neueste Logdatei komplett:
 ```bash
-ls -lt /var/log/system-updates/ | head -n 2
-cat /var/log/system-updates/update_*.log
+cat /var/log/system-updates/$(ls -t /var/log/system-updates/ | head -n 1)
 ```
 
-***Letzte 50 Zeilen des neuesten Logs:***
-
-Option1: Script ausführen
-```bash
-./log_view_new50.sh
-```
-
-Option 2: Manuell ausführen
+Letzte 50 Zeilen:
 ```bash
 tail -n 50 /var/log/system-updates/$(ls -t /var/log/system-updates/ | head -n 1)
+```
+
+Alle Logdateien auflisten:
+```bash
+ls -lth /var/log/system-updates/
 ```
 
 ## Fehlerbehebung
@@ -281,10 +314,15 @@ Bei Problemen oder Fragen:
 
 ## Changelog
 
-### Version 1.0.0 (2025-11-06)
-- Initiale Veröffentlichung
-- Unterstützung für Debian, Ubuntu, Mint, RHEL, Fedora, SUSE
-- E-Mail-Benachrichtigung
-- Automatisches Logging
-- Interaktives Installations-Script
-- Cron-Job-Unterstützung
+Die vollständige Versionshistorie findest du in der [CHANGELOG.md](CHANGELOG.md) Datei.
+
+### Aktuelle Version: 1.1.0 (2025-11-09)
+
+**Highlights:**
+- ✅ Neues interaktives Log-Viewer-Script
+- ✅ Behobene Cron-Job-Einrichtung (Auswahl 1-4 funktioniert jetzt)
+- ✅ Verbesserte Input-Verarbeitung ohne unsichtbare ENTER-Schritte
+- ✅ Automatisches Anlegen des Log-Verzeichnisses mit sudo
+- ✅ Distributionsspezifische Installationsanweisungen für Mail-Programme
+
+**Siehe [CHANGELOG.md](CHANGELOG.md) für alle Details**
