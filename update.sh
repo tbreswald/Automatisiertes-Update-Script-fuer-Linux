@@ -94,13 +94,22 @@ send_email() {
 
     if [ "$ENABLE_EMAIL" = true ] && [ -n "$EMAIL_RECIPIENT" ]; then
         if command -v mail &> /dev/null; then
-            echo "$body" | mail -s "$subject" "$EMAIL_RECIPIENT"
-            log_info "E-Mail gesendet an: $EMAIL_RECIPIENT"
+            if echo "$body" | mail -s "$subject" "$EMAIL_RECIPIENT" 2>/dev/null; then
+                log_info "E-Mail erfolgreich gesendet an: $EMAIL_RECIPIENT"
+            else
+                log_warning "E-Mail konnte nicht gesendet werden (MTA nicht konfiguriert?)"
+                log_warning "Installiere und konfiguriere einen MTA wie postfix oder ssmtp"
+            fi
         elif command -v sendmail &> /dev/null; then
-            echo -e "Subject: $subject\n\n$body" | sendmail "$EMAIL_RECIPIENT"
-            log_info "E-Mail gesendet an: $EMAIL_RECIPIENT"
+            if echo -e "Subject: $subject\n\n$body" | sendmail "$EMAIL_RECIPIENT" 2>/dev/null; then
+                log_info "E-Mail erfolgreich gesendet an: $EMAIL_RECIPIENT"
+            else
+                log_warning "E-Mail konnte nicht gesendet werden (MTA nicht konfiguriert?)"
+                log_warning "Installiere und konfiguriere einen MTA wie postfix oder ssmtp"
+            fi
         else
             log_warning "Kein Mail-Programm gefunden (mail/sendmail)"
+            log_warning "Installiere 'mailutils' oder 'mailx' für E-Mail-Benachrichtigungen"
         fi
     fi
 }
@@ -178,6 +187,24 @@ update_suse() {
     return 0
 }
 
+# Update für Arch Linux
+update_arch() {
+    log_info "Starte Update-Prozess für Arch-basierte Distribution..."
+
+    # Paketdatenbank synchronisieren und System aktualisieren
+    pacman -Syu --noconfirm 2>&1 | tee -a "$LOG_FILE"
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        log_error "pacman -Syu fehlgeschlagen"
+        return 1
+    fi
+
+    # Optional: Paket-Cache bereinigen (alte Versionen behalten)
+    pacman -Sc --noconfirm 2>&1 | tee -a "$LOG_FILE"
+
+    log_info "Update erfolgreich abgeschlossen"
+    return 0
+}
+
 # Neustart prüfen
 check_reboot_required() {
     if [ "$AUTO_REBOOT" = true ]; then
@@ -219,6 +246,9 @@ case "$DISTRO" in
         ;;
     opensuse|opensuse-leap|opensuse-tumbleweed|sles|suse)
         update_suse && UPDATE_SUCCESS=true
+        ;;
+    arch|manjaro|endeavouros|garuda|arcolinux)
+        update_arch && UPDATE_SUCCESS=true
         ;;
     *)
         log_error "Nicht unterstützte Distribution: $DISTRO"
