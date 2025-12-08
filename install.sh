@@ -150,6 +150,8 @@ create_config() {
             echo "  - RHEL/Fedora: sudo dnf install mailx postfix"
             echo "  - openSUSE: sudo zypper install mailx postfix"
             echo "  - Arch/Manjaro: sudo pacman -S mailutils postfix"
+            echo "  - Solus: sudo eopkg install mailutils postfix"
+            echo "  - Void Linux: sudo xbps-install -S mailx postfix"
             echo
             echo "Für einfache Konfiguration (z.B. Gmail) verwende ssmtp statt postfix."
             echo "Du kannst dies jetzt installieren oder später nachrüsten."

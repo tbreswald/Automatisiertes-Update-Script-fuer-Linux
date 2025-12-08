@@ -5,6 +5,19 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [Unreleased]
+
+### Hinzugefügt
+- **Solus Unterstützung**: Neue `update_solus()` Funktion (PR #3, danke @mrtoadie)
+  - Verwendet `eopkg update-repo` und `eopkg upgrade -y`
+  - Automatische Fehlerbehandlung und Logging
+- **Void Linux Unterstützung**: Neue `update_void()` Funktion (PR #4, danke @tbreswald)
+  - Verwendet `xbps-install -Su -y`
+  - Vollautomatische System-Updates für Void-basierte Distributionen
+
+### Dokumentation
+- README.md: Solus und Void Linux zu unterstützten Distributionen hinzugefügt
+
 ## [1.2.0] - 2025-11-09
 
 ### Hinzugefügt

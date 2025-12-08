@@ -14,6 +14,8 @@ Automatisiertes Update-Script für verschiedene Linux-Distributionen mit optiona
 - **RedHat-basiert**: RHEL, CentOS, Fedora, Rocky Linux, AlmaLinux
 - **SUSE-basiert**: openSUSE (Leap/Tumbleweed), SLES
 - **Arch-basiert**: Arch Linux, Manjaro, EndeavourOS, Garuda Linux, ArcoLinux
+- **Solus**: Solus
+- **Void Linux**: Void Linux
 
 ## Features
 

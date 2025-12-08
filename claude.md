@@ -8,6 +8,8 @@ Automatisiertes Update-Script für verschiedene Linux-Distributionen mit optiona
 - **RedHat-Familie**: RHEL, CentOS, Fedora, Rocky Linux, AlmaLinux
 - **SUSE-Familie**: openSUSE (Leap/Tumbleweed), SLES
 - **Arch-Familie**: Arch Linux, Manjaro, EndeavourOS, Garuda Linux, ArcoLinux
+- **Solus**: Solus
+- **Void Linux**: Void Linux
 
 ## Funktionen
 - Automatische Erkennung der Linux-Distribution
@@ -166,6 +168,18 @@ Für die Verwendung:
 4. Optional: Git-Repository initialisieren für Versionsverwaltung
 
 ## Version
+
+### Unreleased (in Entwicklung)
+**Neue Features:**
+- Solus Unterstützung hinzugefügt (PR #3 von @mrtoadie)
+  - Neue `update_solus()` Funktion
+  - Verwendet `eopkg update-repo` und `eopkg upgrade -y`
+- Void Linux Unterstützung hinzugefügt (PR #4 von @tbreswald)
+  - Neue `update_void()` Funktion
+  - Verwendet `xbps-install -Su -y`
+
+**Dokumentation:**
+- README.md, install.sh und claude.md mit Solus und Void Linux aktualisiert
 
 ### 1.2.0 (2025-11-09)
 **Neue Features:**
